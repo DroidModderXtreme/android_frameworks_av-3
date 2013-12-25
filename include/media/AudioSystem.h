@@ -25,9 +25,7 @@
 #include <system/audio_policy.h>
 #include <utils/Errors.h>
 #include <utils/Mutex.h>
-#ifdef QCOM_HARDWARE
 #include <media/AudioParameter.h>
-#endif
 
 namespace android {
 

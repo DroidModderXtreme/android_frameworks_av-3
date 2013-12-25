@@ -162,9 +162,7 @@ private:
     };
 
     enum {
-#ifdef QCOM_HARDWARE
         kPortIndexBoth   = -1,
-#endif
         kPortIndexInput  = 0,
         kPortIndexOutput = 1
     };
@@ -387,10 +385,9 @@ private:
     OMXCodec(const OMXCodec &);
     OMXCodec &operator=(const OMXCodec &);
 
-#ifdef QCOM_HARDWARE
+
     int32_t mNumBFrames;
     bool mInSmoothStreamingMode;
-#endif
 };
 
 struct CodecCapabilities {
