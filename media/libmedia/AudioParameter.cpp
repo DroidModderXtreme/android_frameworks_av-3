@@ -45,6 +45,9 @@ const char * const AudioParameter::keyADSPStatus = AUDIO_PARAMETER_KEY_ADSP_STAT
 const char * const AudioParameter::keyCanOpenProxy = AUDIO_CAN_OPEN_PROXY;
 const char * const AudioParameter::keyFmVolume = AUDIO_PARAMETER_KEY_FM_VOLUME;
 #endif
+#ifdef STE_AUDIO
+const char *AudioParameter::keySinkLatency = "sink_latency";
+#endif
 
 const char * const AudioParameter::keySoundCardStatus = AUDIO_PARAMETER_KEY_SND_CARD_STATUS;
 

@@ -13,6 +13,10 @@ include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 
+ifeq ($(BOARD_USES_STE_HARDWARE),true)
+LOCAL_CFLAGS += -DSTE_AUDIO
+LOCAL_CFLAGS += -Wno-conversion -fpermissive
+endif
 LOCAL_SRC_FILES:=               \
     AudioFlinger.cpp            \
     Threads.cpp                 \

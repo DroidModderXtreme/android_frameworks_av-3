@@ -640,7 +640,7 @@ private:
 
     static int __set_usage(struct preview_stream_ops* w, int usage)
     {
-#ifdef HTC_3D_SUPPORT
+#ifdef HTC_3D_SUPPORT || STE_HARDWARE
         usage |= GRALLOC_USAGE_PRIVATE_0;
 #endif
         ANativeWindow *a = anw(w);

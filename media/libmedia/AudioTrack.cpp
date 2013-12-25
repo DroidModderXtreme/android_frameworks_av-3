@@ -195,6 +195,9 @@ AudioTrack::~AudioTrack()
         AudioSystem::releaseAudioSessionId(mSessionId);
 #endif
     }
+#ifdef STE_AUDIO
+        AudioSystem::unregisterLatencyNotificationClient(mLatencyClientId);
+#endif
 }
 
 status_t AudioTrack::set(
@@ -1281,6 +1284,11 @@ status_t AudioTrack::obtainBuffer(Buffer* audioBuffer, int32_t waitCount)
         audioBuffer->raw = NULL;
         return INVALID_OPERATION;
     }
+#ifdef STE_AUDIO
+    if (mLatencyClientId != -1) {
+        AudioSystem::unregisterLatencyNotificationClient(mLatencyClientId);
+    }
+#endif
 
     const struct timespec *requested;
     if (waitCount == -1) {
@@ -1988,6 +1996,15 @@ uint32_t AudioTrack::getUnderrunFrames() const
     AutoMutex lock(mLock);
     return mProxy->getUnderrunFrames();
 }
+
+#ifdef STE_AUDIO
+// static
+void AudioTrack::LatencyCallback(void *cookie, audio_io_handle_t output, uint32_t sinkLatency)
+{
+    AudioTrack *me = static_cast<AudioTrack *>(cookie);
+    me->mLatency = sinkLatency + (1000*me->mCblk->frameCount) / me->mCblk->sampleRate;
+}
+#endif
 
 // =========================================================================
 

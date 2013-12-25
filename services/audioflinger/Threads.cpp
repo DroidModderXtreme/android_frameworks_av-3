@@ -1625,6 +1625,9 @@ void AudioFlinger::PlaybackThread::audioConfigChanged_l(int event, int param) {
         break;
 
     case AudioSystem::STREAM_CONFIG_CHANGED:
+#ifdef STE_AUDIO
+    case AudioSystem::SINK_LATENCY_CHANGED:
+#endif
         param2 = &param;
     case AudioSystem::OUTPUT_CLOSED:
     default:
@@ -3524,6 +3527,12 @@ bool AudioFlinger::MixerThread::checkForNewParameters_l()
             }
         }
 
+#ifdef STE_AUDIO
+        if (param.getInt(String8(AudioParameter::keySinkLatency), value) == NO_ERROR) {
+            sendIoConfigEvent_l(AudioSystem::SINK_LATENCY_CHANGED, value);
+        }
+#endif
+
         if (status == NO_ERROR) {
             status = mOutput->stream->common.set_parameters(&mOutput->stream->common,
                                                     keyValuePair.string());
@@ -4490,7 +4499,12 @@ AudioFlinger::RecordThread::RecordThread(const sp<AudioFlinger>& audioFlinger,
                                          audio_channel_mask_t channelMask,
                                          audio_io_handle_t id,
                                          audio_devices_t outDevice,
+#ifdef STE_AUDIO
+                                         audio_devices_t inDevice,
+                                         audio_input_clients pInputClientId
+#else
                                          audio_devices_t inDevice
+#endif
 #ifdef TEE_SINK
                                          , const sp<NBAIO_Sink>& teeSink
 #endif
@@ -4507,7 +4521,9 @@ AudioFlinger::RecordThread::RecordThread(const sp<AudioFlinger>& audioFlinger,
 #endif
 {
     snprintf(mName, kNameLength, "AudioIn_%X", id);
-
+#ifdef STE_AUDIO
+    mInputClientId = pInputClientId;
+#endif
     readInputParameters();
 }
 
@@ -5440,6 +5456,14 @@ KeyedVector<int, bool> AudioFlinger::RecordThread::sessionIds() const
     }
     return ids;
 }
+
+#ifdef STE_AUDIO
+AudioFlinger::AudioStreamIn* AudioFlinger::RecordThread::getInput() const
+{
+    Mutex::Autolock _l(mLock);
+    return mInput;
+}
+#endif
 
 AudioFlinger::AudioStreamIn* AudioFlinger::RecordThread::clearInput()
 {
