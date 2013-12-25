@@ -49,7 +49,7 @@
 #endif
 
 #include "include/avc_utils.h"
-#ifdef QCOM_HARDWARE
+#ifdef QCOM_HARDWARE || STE_HARDWARE
 #include "include/ExtendedUtils.h"
 #endif
 
