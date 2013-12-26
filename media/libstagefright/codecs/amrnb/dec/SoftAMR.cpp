@@ -438,14 +438,10 @@ void SoftAMR::onQueueFilled(OMX_U32 portIndex) {
 void SoftAMR::onPortFlushCompleted(OMX_U32 portIndex) {
         ALOGE("onPortFlushCompleted portindex %d, resetting frame ",portIndex);
         if(portIndex == 0) {
-#ifdef QCOM_HARDWARE
            if(mMode == MODE_NARROW)
               Speech_Decode_Frame_reset(mState);
            else
               pvDecoder_AmrWb_Reset(mState, 0);
-#else
-           Speech_Decode_Frame_reset(mState);
-#endif
         }
 }
 

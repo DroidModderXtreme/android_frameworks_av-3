@@ -32,9 +32,7 @@
 #include "include/OggExtractor.h"
 #include "include/WAVExtractor.h"
 #include "include/WVMExtractor.h"
-#ifdef QCOM_HARDWARE
 #include "include/ExtendedExtractor.h"
-#endif
 
 #include "matroska/MatroskaExtractor.h"
 
@@ -156,6 +154,7 @@ void DataSource::RegisterSniffer_l(SnifferFunc func) {
 
 // static
 void DataSource::RegisterDefaultSniffers() {
+<<<<<<< HEAD
     Mutex::Autolock autoLock(gSnifferMutex);
     if (gSniffersRegistered) {
         return;
@@ -175,6 +174,20 @@ void DataSource::RegisterDefaultSniffers() {
 #ifdef QCOM_HARDWARE
     RegisterSniffer_l(ExtendedExtractor::Sniff);
 #endif
+=======
+    RegisterSniffer(SniffMPEG4);
+    RegisterSniffer(SniffMatroska);
+    RegisterSniffer(SniffOgg);
+    RegisterSniffer(SniffWAV);
+    RegisterSniffer(SniffFLAC);
+    RegisterSniffer(SniffAMR);
+    RegisterSniffer(SniffMPEG2TS);
+    RegisterSniffer(SniffMP3);
+    RegisterSniffer(SniffAAC);
+    RegisterSniffer(SniffMPEG2PS);
+    RegisterSniffer(SniffWVM);
+    RegisterSniffer(ExtendedExtractor::Sniff);
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 
     char value[PROPERTY_VALUE_MAX];
     if (property_get("drm.service.enabled", value, NULL)

@@ -207,9 +207,11 @@ private:
 
     bool mWatchForAudioSeekComplete;
     bool mWatchForAudioEOS;
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     static int mTunnelAliveAP;
-#endif
 
     sp<TimedEventQueue::Event> mVideoEvent;
     bool mVideoEventPending;
@@ -319,7 +321,10 @@ private:
         ASSIGN
     };
     void modifyFlags(unsigned value, FlagMode mode);
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     void checkTunnelExceptions();
 #endif
     void logFirstFrame();
@@ -329,6 +334,10 @@ private:
     void printStats();
     int64_t getTimeOfDayUs();
     bool mStatistics;
+<<<<<<< HEAD
+=======
+    int64_t mLateAVSyncMargin;
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 
     struct TrackStat {
         String8 mMIME;
@@ -390,11 +399,13 @@ private:
 
     size_t countTracks() const;
 
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     bool inSupportedTunnelFormats(const char * mime);
     //Flag to check if tunnel mode audio is enabled
     bool mIsTunnelAudio;
-#endif
     AwesomePlayer(const AwesomePlayer &);
     AwesomePlayer &operator=(const AwesomePlayer &);
 };

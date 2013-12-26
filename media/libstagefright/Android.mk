@@ -43,6 +43,7 @@ LOCAL_SRC_FILES:=                         \
         NuMediaExtractor.cpp              \
         OMXClient.cpp                     \
         OMXCodec.cpp                      \
+        ExtendedCodec.cpp                 \
         OggExtractor.cpp                  \
         SampleIterator.cpp                \
         SampleTable.cpp                   \
@@ -62,6 +63,8 @@ LOCAL_SRC_FILES:=                         \
         avc_utils.cpp                     \
         mp4/FragmentedMP4Parser.cpp       \
         mp4/TrackFragment.cpp             \
+        ExtendedExtractor.cpp             \
+        ExtendedUtils.cpp                 \
 
 LOCAL_C_INCLUDES:= \
         $(TOP)/frameworks/av/include/media/stagefright/timedtext \
@@ -78,7 +81,11 @@ else
 LOCAL_C_INCLUDES += $(TOP)/frameworks/native/include/media/openmax
 endif
 
+<<<<<<< HEAD
 ifneq ($(filter caf bfam,$(TARGET_QCOM_AUDIO_VARIANT)),)
+=======
+ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     ifeq ($(BOARD_USES_ALSA_AUDIO),true)
         LOCAL_SRC_FILES += LPAPlayerALSA.cpp
         ifeq ($(call is-chipset-in-board-platform,msm8960),true)

@@ -79,12 +79,14 @@ enum {
     GET_PRIMARY_OUTPUT_SAMPLING_RATE,
     GET_PRIMARY_OUTPUT_FRAME_COUNT,
     SET_LOW_RAM_DEVICE,
-#ifdef QCOM_HARDWARE
     CREATE_DIRECT_TRACK,
+<<<<<<< HEAD
 #endif
 #ifdef STE_AUDIO
     READ_INPUT,
 #endif
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 };
 
 class BpAudioFlinger : public BpInterface<IAudioFlinger>
@@ -156,7 +158,6 @@ public:
         return track;
     }
 
-#ifdef QCOM_HARDWARE
     virtual sp<IDirectTrack> createDirectTrack(
                                 pid_t pid,
                                 uint32_t sampleRate,
@@ -197,7 +198,6 @@ public:
         }
         return track;
     }
-#endif
 
     virtual sp<IAudioRecord> openRecord(
                                 audio_io_handle_t input,
@@ -887,7 +887,6 @@ status_t BnAudioFlinger::onTransact(
             reply->writeStrongBinder(track->asBinder());
             return NO_ERROR;
         } break;
-#ifdef QCOM_HARDWARE
         case CREATE_DIRECT_TRACK: {
             CHECK_INTERFACE(IAudioFlinger, data, reply);
             pid_t pid = data.readInt32();
@@ -906,7 +905,6 @@ status_t BnAudioFlinger::onTransact(
             reply->writeStrongBinder(track->asBinder());
             return NO_ERROR;
         } break;
-#endif
         case OPEN_RECORD: {
             CHECK_INTERFACE(IAudioFlinger, data, reply);
             audio_io_handle_t input = (audio_io_handle_t) data.readInt32();

@@ -38,9 +38,7 @@ extern const char *MEDIA_MIMETYPE_VIDEO_VC1;
 
 extern const char *MEDIA_MIMETYPE_AUDIO_AMR_NB;
 extern const char *MEDIA_MIMETYPE_AUDIO_AMR_WB;
-#ifdef QCOM_HARDWARE
 extern const char *MEDIA_MIMETYPE_AUDIO_AMR_WB_PLUS;
-#endif
 extern const char *MEDIA_MIMETYPE_AUDIO_MPEG;           // layer III
 extern const char *MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_I;
 extern const char *MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_II;

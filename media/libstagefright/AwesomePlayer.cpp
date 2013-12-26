@@ -42,15 +42,17 @@
 #include <media/stagefright/foundation/ADebug.h>
 #include <media/stagefright/timedtext/TimedTextDriver.h>
 #include <media/stagefright/AudioPlayer.h>
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
 #ifdef LEGACY_LPA
 #include <media/stagefright/LPAPlayerLegacy.h>
 #else
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 #include <media/stagefright/LPAPlayer.h>
 #endif
 #ifdef USE_TUNNEL_MODE
 #include <media/stagefright/TunnelPlayer.h>
-#endif
 #endif
 #include <media/stagefright/DataSource.h>
 #include <media/stagefright/FileSource.h>
@@ -60,6 +62,10 @@
 #include <media/stagefright/MediaSource.h>
 #include <media/stagefright/MetaData.h>
 #include <media/stagefright/OMXCodec.h>
+<<<<<<< HEAD
+=======
+#include "include/ExtendedUtils.h"
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 #include <media/stagefright/Utils.h>
 
 #include <gui/IGraphicBufferProducer.h>
@@ -71,10 +77,8 @@
 
 #define USE_SURFACE_ALLOC 1
 #define FRAME_DROP_FREQ 0
-#ifdef QCOM_HARDWARE
 #define LPA_MIN_DURATION_USEC_ALLOWED 30000000
 #define LPA_MIN_DURATION_USEC_DEFAULT 60000000
-#endif
 
 namespace android {
 
@@ -82,9 +86,14 @@ static int64_t kLowWaterMarkUs = 2000000ll;  // 2secs
 static int64_t kHighWaterMarkUs = 5000000ll;  // 5secs
 static const size_t kLowWaterMarkBytes = 40000;
 static const size_t kHighWaterMarkBytes = 200000;
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+static const int64_t kInitFrameDurationUs = 16000;
+static const int64_t kScheduleLagGapUs = 1000;
+static const int64_t kDefaultEventDelayUs = 10000;
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 int AwesomePlayer::mTunnelAliveAP = 0;
-#endif
 
 // maximum time in paused state when offloading audio decompression. When elapsed, the AudioPlayer
 // is destroyed to allow the audio DSP to power down.
@@ -222,6 +231,10 @@ AwesomePlayer::AwesomePlayer()
       mVideoBuffer(NULL),
       mDecryptHandle(NULL),
       mLastVideoTimeUs(-1),
+<<<<<<< HEAD
+=======
+      mFrameDurationUs(kInitFrameDurationUs),
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
       mTextDriver(NULL),
       mOffloadAudio(false),
       mAudioTearDown(false) {
@@ -251,9 +264,14 @@ AwesomePlayer::AwesomePlayer()
     mAudioTearDownPosition = 0;
 
     reset();
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
     mIsTunnelAudio = false;
 #endif
+=======
+    mIsTunnelAudio = false;
+    mLateAVSyncMargin = ExtendedUtils::ShellProp::getMaxAVSyncLateMargin();
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 }
 
 AwesomePlayer::~AwesomePlayer() {
@@ -263,7 +281,10 @@ AwesomePlayer::~AwesomePlayer() {
 
     reset();
 
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     // Disable Tunnel Mode Audio
     if (mIsTunnelAudio) {
         if (mTunnelAliveAP > 0) {
@@ -272,7 +293,6 @@ AwesomePlayer::~AwesomePlayer() {
         }
     }
     mIsTunnelAudio = false;
-#endif
     mClient.disconnect();
 }
 
@@ -681,7 +701,11 @@ void AwesomePlayer::reset_l() {
 
     mBitrate = -1;
     mLastVideoTimeUs = -1;
+<<<<<<< HEAD
 
+=======
+    mFrameDurationUs = kInitFrameDurationUs;
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     {
         Mutex::Autolock autoLock(mStatsLock);
         mStats.mFd = -1;
@@ -1038,12 +1062,14 @@ status_t AwesomePlayer::play_l() {
             // We don't want to post an error notification at this point,
             // the error returned from MediaPlayer::start() will suffice.
             bool sendErrorNotification = false;
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
             if(mIsTunnelAudio) {
                 // For tunnel Audio error has to be posted to the client
                 sendErrorNotification = true;
             }
-#endif
             status_t err = startAudioPlayer_l(sendErrorNotification);
 
             if ((err != OK) && mOffloadAudio) {
@@ -1142,13 +1168,15 @@ void AwesomePlayer::createAudioPlayer_l()
     uint32_t flags = 0;
     int64_t cachedDurationUs;
     bool eos;
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     sp<MetaData> format = mAudioTrack->getFormat();
     const char *mime;
     bool success = format->findCString(kKeyMIMEType, &mime);
     int tunnelObjectsAlive = 0;
     CHECK(success);
-#endif
     if (mOffloadAudio) {
         flags |= AudioPlayer::USE_OFFLOAD;
     } else if (mVideoSource == NULL
@@ -1163,7 +1191,10 @@ void AwesomePlayer::createAudioPlayer_l()
     if (mVideoSource != NULL) {
         flags |= AudioPlayer::HAS_VIDEO;
     }
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 #ifdef USE_TUNNEL_MODE
     // Create tunnel player if tunnel mode is enabled
     ALOGW("Trying to create tunnel player mIsTunnelAudio %d, \
@@ -1243,9 +1274,6 @@ void AwesomePlayer::createAudioPlayer_l()
         ALOGV("AudioPlayer created, Non-LPA mode mime %s duration %lld\n", mime, mDurationUs);
         mAudioPlayer = new AudioPlayer(mAudioSink, flags, this);
     }
-#else
-    mAudioPlayer = new AudioPlayer(mAudioSink, flags, this);
-#endif
     mAudioPlayer->setSource(mAudioSource);
 
     mTimeSource = mAudioPlayer;
@@ -1726,6 +1754,7 @@ status_t AwesomePlayer::initAudioDecoder() {
         streamType = mAudioSink->getAudioStreamType();
     }
 
+<<<<<<< HEAD
     if (mDecryptHandle != NULL) {
         ALOGV("Do not use offload playback for DRM contents");
         mOffloadAudio = false;
@@ -1735,6 +1764,8 @@ status_t AwesomePlayer::initAudioDecoder() {
     }
 
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     int32_t nchannels = 0;
     int32_t isADTS = 0;
     meta->findInt32( kKeyChannelCount, &nchannels );
@@ -1846,26 +1877,17 @@ status_t AwesomePlayer::initAudioDecoder() {
                 mClient.interface(), mAudioTrack->getFormat(),
                 false, // createEncoder
                 mAudioTrack, matchComponentName, flags,NULL);
-#else
-    if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_RAW)) {
-        ALOGV("createAudioPlayer: bypass OMX (raw)");
-        mAudioSource = mAudioTrack;
-    } else {
-        // If offloading we still create a OMX decoder as a fall-back
-        // but we don't start it
-        mOmxSource = OMXCodec::Create(
-                mClient.interface(), mAudioTrack->getFormat(),
-                false, // createEncoder
-                mAudioTrack);
-#endif
 
         if (mOffloadAudio) {
             ALOGV("createAudioPlayer: bypass OMX (offload)");
             mAudioSource = mAudioTrack;
+<<<<<<< HEAD
 #ifndef QCOM_ENHANCED_AUDIO
         } else {
             mAudioSource = mOmxSource;
 #endif
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
         }
     }
 
@@ -2077,6 +2099,11 @@ void AwesomePlayer::finishSeekIfNecessary(int64_t videoTimeUs) {
 
 void AwesomePlayer::onVideoEvent() {
     ATRACE_CALL();
+<<<<<<< HEAD
+=======
+    int64_t eventStartTimeUs = mSystemTimeSource.getRealTimeUs();
+    int64_t earlyGapUs = kScheduleLagGapUs; // gap for in case of event scheduling lag
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     Mutex::Autolock autoLock(mLock);
     if (!mVideoEventPending) {
         // The event has been cancelled in reset_l() but had already
@@ -2186,7 +2213,15 @@ void AwesomePlayer::onVideoEvent() {
 
     int64_t timeUs;
     CHECK(mVideoBuffer->meta_data()->findInt64(kKeyTime, &timeUs));
+<<<<<<< HEAD
 
+=======
+    if ((mLastVideoTimeUs != timeUs)
+          && (mLastVideoTimeUs > 0)
+          && (mSeeking == NO_SEEK)) {
+        mFrameDurationUs = timeUs - mLastVideoTimeUs;
+    }
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
     mLastVideoTimeUs = timeUs;
 
     if (mSeeking == SEEK_VIDEO_ONLY) {
@@ -2288,7 +2323,11 @@ void AwesomePlayer::onVideoEvent() {
             }
         }
 
+<<<<<<< HEAD
         if (latenessUs > 40000) {
+=======
+        if (latenessUs > mLateAVSyncMargin) {
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
             // We're more than 40ms late.
             ALOGV("we're late by %lld us (%.2f secs)",
                  latenessUs, latenessUs / 1E6);
@@ -2314,7 +2353,14 @@ void AwesomePlayer::onVideoEvent() {
                     if(!(mFlags & AT_EOS)) logLate(timeUs,nowUs,latenessUs);
                 }
 
+<<<<<<< HEAD
                 postVideoEvent_l(0);
+=======
+                int64_t eventDurationUs = mSystemTimeSource.getRealTimeUs() - eventStartTimeUs;
+                int64_t delayUs = mFrameDurationUs - eventDurationUs - latenessUs - earlyGapUs;
+                delayUs = delayUs > kDefaultEventDelayUs ? kDefaultEventDelayUs : delayUs;
+                postVideoEvent_l(delayUs > 0 ? delayUs : 0);
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
                 return;
             }
         }
@@ -2349,7 +2395,10 @@ void AwesomePlayer::onVideoEvent() {
         if (mFlags & PLAYING) {
             notifyIfMediaStarted_l();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
         {
             Mutex::Autolock autoLock(mStatsLock);
             logOnTime(timeUs,nowUs,latenessUs);
@@ -2379,6 +2428,7 @@ void AwesomePlayer::onVideoEvent() {
         modifyFlags(SEEK_PREVIEW, CLEAR);
         return;
     }
+<<<<<<< HEAD
 
     /* get next frame time */
     if (wasSeeking == NO_SEEK) {
@@ -2416,6 +2466,12 @@ void AwesomePlayer::onVideoEvent() {
     }
 
     postVideoEvent_l();
+=======
+    int64_t eventDurationUs = mSystemTimeSource.getRealTimeUs() - eventStartTimeUs;
+    int64_t delayUs = mFrameDurationUs - eventDurationUs - latenessUs - earlyGapUs;
+    delayUs = delayUs > kDefaultEventDelayUs ? kDefaultEventDelayUs : delayUs;
+    postVideoEvent_l(delayUs > 0 ? delayUs : 0);
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 }
 
 void AwesomePlayer::postVideoEvent_l(int64_t delayUs) {
@@ -3357,7 +3413,10 @@ void AwesomePlayer::onAudioTearDownEvent() {
     beginPrepareAsync_l();
 }
 
+<<<<<<< HEAD
 #ifdef QCOM_ENHANCED_AUDIO
+=======
+>>>>>>> parent of 8d420ed... frameworks/av: Add ifdefs for QCOM_HARDWARE features
 bool AwesomePlayer::inSupportedTunnelFormats(const char * mime) {
     const char * tunnelFormats [ ] = {
         MEDIA_MIMETYPE_AUDIO_MPEG,

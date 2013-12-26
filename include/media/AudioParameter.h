@@ -51,7 +51,7 @@ public:
     static const char * const keyFrameCount;
     static const char * const keyInputSource;
     static const char * const keyScreenState;
-#ifdef QCOM_HARDWARE
+#ifdef QCOM_FM_ENABLED
     static const char * const keyHandleFm;
     static const char * const keyVoipCheck;
     static const char * const keyFluenceType;
